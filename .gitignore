@@ -79,7 +79,6 @@ $RECYCLE.BIN/
 *~
 
 ### Spring Boot ###
-application*.properties
 !application.properties  # Keep base config
 !application-*.properties  # Keep profile-specific configs
 application*.yml
