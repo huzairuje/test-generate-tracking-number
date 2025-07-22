@@ -1,0 +1,17 @@
+@startuml
+actor User
+participant "TrackingNumberController" as Controller
+participant "TrackingNumberService" as Service
+participant "TrackingNumberRepository" as JpaRepo
+participant "TrackingNumberDocumentRepository" as MongoRepo
+participant "Kafka" as Kafka
+
+User -> Controller: GET /next-tracking-number
+Controller -> Service: generateTrackingNumber(request)
+Service -> Service: Generate unique tracking number
+Service -> JpaRepo: save(trackingNumber)
+Service -> MongoRepo: save(eventLog)
+Service -> Kafka: send("tracking-numbers", trackingNumber)
+Service --> Controller: trackingNumberResponse
+Controller --> User: 200 OK
+@enduml
