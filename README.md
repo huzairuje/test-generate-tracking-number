@@ -48,7 +48,7 @@ curl --location 'localhost:9090/next-tracking-number?origin_country_id=US&destin
 
 or you can access to use this (url public)
 ```
-curl --location 'https://fancy-chosen-staying-curves.trycloudflare.com/next-tracking-number?origin_country_id=ID&destination_country_id=MY&weight=344.343&created_at=2025-07-22T10%3A00%3A00Z&customer_id=3fa85f64-5717-4562-b3fc-2c963f66afa6&customer_name=Acme%20Corporation%20New&customer_slug=acme-corporation-new'
+curl --location 'https://western-shaped-adverse-dresses.trycloudflare.com/next-tracking-number?origin_country_id=ID&destination_country_id=MY&weight=344.343&created_at=2025-07-22T10%3A00%3A00Z&customer_id=3fa85f64-5717-4562-b3fc-2c963f66afa6&customer_name=Acme%20Corporation%20New&customer_slug=acme-corporation-new'
 ```
 
 and you can deploy it with docker or kube using microK8s
