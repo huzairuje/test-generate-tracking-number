@@ -1,0 +1,114 @@
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:14
+    container_name: teleport-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: teleport_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # MongoDB
+  mongodb:
+    image: mongo:5
+    container_name: teleport-mongo
+    restart: unless-stopped
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27018:27017"
+
+  # Zookeeper (for Kafka)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: teleport-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: teleport-kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"   # maps host 9092 → container 9092
+      - "29092:29092" # maps host 29092 → container 29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # two listeners: one for in‑cluster, one for host
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,HOST:PLAINTEXT
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  # Zipkin
+  zipkin:
+    image: openzipkin/zipkin:2.23
+    container_name: teleport-zipkin
+    restart: unless-stopped
+    ports:
+      - "9411:9411"
+
+  # Spring Boot app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: teleport-app
+    restart: on-failure
+    depends_on:
+      - postgres
+      - mongodb
+      - kafka
+      - zipkin
+    ports:
+      - "9090:9090"
+    environment:
+      # Server
+      SERVER_PORT: 9090
+
+      # PostgreSQL
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/teleport_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+      # MongoDB
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/teleport_db
+
+      # Flyway
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
+      SPRING_FLYWAY_VALIDATE_ON_MIGRATE: "true"
+      SPRING_FLYWAY_VALIDATE_MIGRATION_NAMING: "true"
+      SPRING_FLYWAY_REPAIR_ON_MIGRATE: "true"
+
+      # JPA / Hibernate
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_TYPE_PREFERRED_APPLY_JDBC_TYPE: "true"
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      LOGGING_LEVEL_ORG_HIBERNATE_ENGINE_JDBC_SPI_SQL_EXCEPTION_HELPER: DEBUG
+
+      # Kafka
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      # Zipkin
+      SPRING_ZIPKIN_BASE_URL: http://zipkin:9411
+
+volumes:
+  pgdata:
+  mongodata:
