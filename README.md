@@ -28,14 +28,20 @@ A RESTful API that generates unique tracking numbers for parcels.
 **Example request:**
 
 ```
-curl --location --request GET 'http://localhost:8080/next-tracking-number?origin_country_id=MY&destination_country_id=ID&weight=1.234&created_at=2018-11-20T19:29:32+08:00&customer_id=de619854-b59b-425e-9db4-943979e1bd49&customer_name=RedBox%20Logistics&customer_slug=redbox-logistics'
+curl --location 'localhost:9090/next-tracking-number?origin_country_id=US&destination_country_id=GB&weight=344.343&created_at=2025-07-22T10%3A00%3A00Z&customer_id=3fa85f64-5717-4562-b3fc-2c963f66afa6&customer_name=Acme%20Corporation%20New&customer_slug=acme-corporation-new'
 ```
 
 **Example response:**
 
 ```json
 {
-    "tracking_number": "SOME_TRACKING_NUMBER",
-    "created_at": "2023-10-27T10:00:00Z"
+  "tracking_number": "ACMMDE1XVQBMDE1K",
+  "created_at": "2025-07-22T10:00:00Z",
+  "origin_country_id": "US",
+  "destination_country_id": "GB",
+  "weight": 344.343,
+  "customer_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "customer_name": "Acme Corporation New",
+  "customer_slug": "acme-corporation-new"
 }
 ```
