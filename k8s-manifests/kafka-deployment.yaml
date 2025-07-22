@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: bitnami/kafka:3.4.0
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            # Expand environment variables
+            export KAFKA_CFG_ADVERTISED_LISTENERS="PLAINTEXT://kafka:9092,HOST://${HOST_IP}:29092"
+            # Run the original startup command
+            exec /entrypoint.sh /run.sh
+        env:
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: "yes"
+        - name: KAFKA_ENABLE_KRAFT
+          value: "no"
+        - name: KAFKA_CFG_PROCESS_ROLES
+          value: ""
+        - name: KAFKA_CFG_BROKER_ID
+          value: "1"
+        - name: KAFKA_CFG_NODE_ID
+          value: "1"
+        - name: KAFKA_CFG_LISTENERS
+          value: "PLAINTEXT://:9092,HOST://:29092"
+        - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "PLAINTEXT:PLAINTEXT,HOST:PLAINTEXT"
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+          value: "zookeeper:2181"
+        - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        ports:
+        - containerPort: 9092
+        - containerPort: 29092

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teleport-app
+  template:
+    metadata:
+      labels:
+        app: teleport-app
+    spec:
+      containers:
+      - name: app
+        image: teleport-app:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9090
+        env:
+        - name: SERVER_PORT
+          value: "9090"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/teleport_db"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "postgres"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "postgres"
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb://mongodb:27017/teleport_db"
+        - name: SPRING_FLYWAY_ENABLED
+          value: "true"
+        - name: SPRING_FLYWAY_LOCATIONS
+          value: "classpath:db/migration"
+        - name: SPRING_FLYWAY_VALIDATE_ON_MIGRATE
+          value: "true"
+        - name: SPRING_FLYWAY_VALIDATE_MIGRATION_NAMING
+          value: "true"
+        - name: SPRING_FLYWAY_REPAIR_ON_MIGRATE
+          value: "true"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "validate"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+          value: "org.hibernate.dialect.PostgreSQLDialect"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_TYPE_PREFERRED_APPLY_JDBC_TYPE
+          value: "true"
+        - name: SPRING_JPA_SHOW_SQL
+          value: "true"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+          value: "true"
+        - name: LOGGING_LEVEL_ORG_HIBERNATE_ENGINE_JDBC_SPI_SQL_EXCEPTION_HELPER
+          value: "DEBUG"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: SPRING_ZIPKIN_BASE_URL
+          value: "http://zipkin:9411"
