@@ -92,7 +92,6 @@ logging/
 
 # HSQLDB
 *.script
-*.properties
 *.lck
 
 # Derby
@@ -113,12 +112,6 @@ dependency/
 bin/
 gen/
 
-### Docker ###
-docker-compose.yml
-docker-compose.override.yml
-dockerfile
-.dockerignore
-
 ### Frontend ###
 # Node.js
 node_modules/
@@ -135,10 +128,6 @@ aot/
 .env.*.local
 .venv
 .envrc
-
-### Kubernetes ###
-k8s/
-helm-charts/
 
 ### Other ###
 factorypath

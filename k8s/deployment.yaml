@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracking-number-generator
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tracking-number-generator
+  template:
+    metadata:
+      labels:
+        app: tracking-number-generator
+    spec:
+      containers:
+      - name: tracking-number-generator
+        image: your-docker-repo/tracking-number-generator:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb://mongo:27017/test"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/test"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
