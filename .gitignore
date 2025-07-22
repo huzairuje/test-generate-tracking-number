@@ -78,14 +78,6 @@ $RECYCLE.BIN/
 ### Linux ###
 *~
 
-### Spring Boot ###
-!application.properties  # Keep base config
-!application-*.properties  # Keep profile-specific configs
-application*.yml
-!application.yml
-!application-*.yml
-/config/*.local.*
-
 ### Logs ###
 logs/
 *.log
