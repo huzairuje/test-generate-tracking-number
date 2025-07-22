@@ -16,11 +16,11 @@ spec:
       - name: tracking-number-generator
         image: your-docker-repo/tracking-number-generator:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 9090
         env:
         - name: SPRING_DATA_MONGODB_URI
-          value: "mongodb://mongo:27017/test"
+          value: "mongodb://mongo:27017/tracking_number"
         - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://postgres:5432/test"
+          value: "jdbc:postgresql://postgres:5432/tracking_number"
         - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
           value: "kafka:9092"
