@@ -65,7 +65,7 @@ services:
   # Spring Boot app
   app:
     build:
-      context: .
+      context: ..
       dockerfile: docker/Dockerfile
     container_name: teleport-app
     restart: on-failure
