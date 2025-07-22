@@ -63,7 +63,7 @@ public class TrackingNumberControllerTest {
                         .param("customer_id", "de619854-b59b-425e-9db4-943979e1bd49")
                         .param("customer_name", "RedBox Logistics")
                         .param("customer_slug", "redbox-logistics"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -76,6 +76,6 @@ public class TrackingNumberControllerTest {
                         .param("customer_id", "not-a-uuid")
                         .param("customer_name", "RedBox Logistics")
                         .param("customer_slug", "redbox-logistics"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 }

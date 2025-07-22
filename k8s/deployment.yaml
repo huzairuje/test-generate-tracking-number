@@ -13,14 +13,30 @@ spec:
         app: tracking-number-generator
     spec:
       containers:
-      - name: tracking-number-generator
-        image: your-docker-repo/tracking-number-generator:latest
-        ports:
-        - containerPort: 9090
-        env:
-        - name: SPRING_DATA_MONGODB_URI
-          value: "mongodb://mongo:27017/tracking_number"
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://postgres:5432/tracking_number"
-        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-          value: "kafka:9092"
+        - name: tracking-number-generator
+          image: your-docker-repo/tracking-number-generator:latest
+          ports:
+            - containerPort: 9090
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://mongo:27017/tracking_number"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/tracking_number"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9092"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "postgres"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9090
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9090
+            initialDelaySeconds: 20
+            periodSeconds: 10

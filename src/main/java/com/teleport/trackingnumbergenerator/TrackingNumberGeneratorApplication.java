@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 		basePackages = "com.teleport.trackingnumbergenerator.repository.mongodb"
 )
 public class TrackingNumberGeneratorApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(TrackingNumberGeneratorApplication.class, args);
 	}
