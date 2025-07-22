@@ -1,10 +1,10 @@
 # Stage 1: Build the JAR using Maven
 FROM maven:3.8.6-eclipse-temurin-17 AS builder
 WORKDIR /build
-COPY ../pom.xml .
+COPY pom.xml .
 # Download dependencies to cache them (faster rebuilds)
 RUN mvn dependency:go-offline
-COPY ../src ./src
+COPY src ./src
 # Build the application (skip tests for faster builds; remove -DskipTests to run tests)
 RUN mvn package -DskipTests
 
